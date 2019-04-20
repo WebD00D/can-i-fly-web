@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Box, Flex, Text } from 'rebass';
 import moment from 'moment';
+import _ from 'lodash';
 
 import 'antd/dist/antd.css';
 import './index.css';
@@ -28,8 +29,11 @@ export const Container = styled.div`
 
 const Title = styled.h1`
   color: #fff;
-  font-weight: 600;
-  font-size: 48px;
+  font-size: 18px;
+  opacity: 0.5;
+  text-transform: uppercase;
+  font-weight: 900;
+  text-align: center;
 `;
 
 export const AirportCodeLabel = styled(Text)`
@@ -66,6 +70,12 @@ export const SubmitButton = styled.button`
   font-weight: 600;
   background: linear-gradient(123.43deg, #d74cee 7.72%, #4925bf 90.97%);
   border-radius: 50px;
+  transition: 0.2s ease;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
 `;
 
 const DefaultCheckbox = styled(Checkbox)`
@@ -171,6 +181,7 @@ class App extends Component {
     super(props);
 
     this.state = {
+      airports: [],
       airportCodeInput: 'KSMO',
       station: '',
       time: '',
@@ -184,9 +195,25 @@ class App extends Component {
     };
 
     this.WEATHER_KEY = 'e582a58beca4c74aa748e5eb45';
+    this.AIRPORT_KEY = '434ab4-331379';
   }
 
   componentDidMount() {
+    // GET AIRPORTS
+
+    const url = `https://aviation-edge.com/v2/public/airportDatabase?key=${
+      this.AIRPORT_KEY
+    }`;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const airports = _.filter(data, i => i.nameCountry === 'United States');
+        console.log('AIRPORTS', airports);
+        this.setState({
+          airports
+        });
+      });
+
     this.fetchData('KSMO');
   }
 
@@ -241,6 +268,18 @@ class App extends Component {
     return clouds;
   }
 
+  renderAirports() {
+    return (
+      this.state.airports &&
+      Object.keys(this.state.airports).map(a => (
+        <option key={a} value={this.state.airports[a].codeIcaoAirport}>
+          {this.state.airports[a].codeIcaoAirport} -{' '}
+          {this.state.airports[a].nameAirport}
+        </option>
+      ))
+    );
+  }
+
   render() {
     return (
       <Container>
@@ -250,11 +289,12 @@ class App extends Component {
         <Flex flexDirection="column">
           <AirportCodeLabel>Airport Code</AirportCodeLabel>
           <AirportCode
+            list="airports"
             onChange={e => this.setState({ airportCodeInput: e.target.value })}
             value={this.state.airportCodeInput}
           />
-          <Flex justifyContent="space-between" alignItems="center" mt={12}>
-            <DefaultCheckbox>Save as default</DefaultCheckbox>
+          <datalist id="airports">{this.renderAirports()}</datalist>
+          <Flex justifyContent="center" alignItems="center" mt={12}>
             <SubmitButton
               onClick={() => this.fetchData(this.state.airportCodeInput)}
             >
@@ -319,6 +359,7 @@ class App extends Component {
             <DataBoxLabel>
               MADE WITH LOVE BY{' '}
               <a
+                target="_blank"
                 style={{ color: '#d74cee' }}
                 href="https://www.instagram.com/my.friend.christian/"
               >
