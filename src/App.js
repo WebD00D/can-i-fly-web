@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import styled from '@emotion/styled';
 import { Box, Flex, Text } from 'rebass';
 import moment from 'moment';
+import ReactGA from 'react-ga';
+
 import _ from 'lodash';
 
 import 'antd/dist/antd.css';
@@ -200,6 +202,8 @@ class App extends Component {
   }
 
   componentDidMount() {
+    ReactGA.initialize('UA-138714857-1');
+    ReactGA.pageview('/homepage');
     // GET AIRPORTS
 
     const url = `https://aviation-edge.com/v2/public/airportDatabase?key=${
@@ -209,7 +213,7 @@ class App extends Component {
       .then(response => response.json())
       .then(data => {
         const airports = _.filter(data, i => i.nameCountry === 'United States');
-        console.log('AIRPORTS', airports);
+
         this.setState({
           airports
         });
