@@ -303,7 +303,7 @@ class App extends Component {
             <DataBox>
               <Icon src={TEMPERATURE} />
               <DataItem>
-                {this.state.tempC || '-'}°C / ${this.state.tempF || '-'}°F
+                {this.state.tempC || '-'}°C / {this.state.tempF || '-'}°F
               </DataItem>
               <DataBoxLabel>TEMPERATURE</DataBoxLabel>
             </DataBox>
