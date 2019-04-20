@@ -57,6 +57,7 @@ export const AirportCode = styled.input`
     rgba(70, 66, 133, 0.5) 0%,
     rgba(73, 37, 191, 0.5) 100%
   );
+  font-size: 16px;
   border-radius: 6px;
 `;
 
